@@ -1,3 +1,4 @@
+use clap::{ArgAction};
 use clap::Parser;
 use servicepoint::cp437::char_to_cp437;
 use servicepoint::{
@@ -13,9 +14,16 @@ struct Args {
         short,
         long,
         default_value = "localhost:2342",
-        help = "Address of the display"
+        help = "Address of the display. Try '172.23.42.29:2342'."
     )]
     destination: String,
+    #[arg(
+        short,
+        long,
+        action = ArgAction::Count,
+        help = "Increase speed, but loose some packages. Add multiple times to go faster."
+    )]
+    fast: u8,
 }
 
 struct App {
@@ -23,19 +31,25 @@ struct App {
     mirror: CharGrid,
     x: usize,
     y: usize,
+    fast: bool,
+    faster: bool,
 }
 
 impl App {
-    fn new(connection: Connection) -> Self {
+    fn new(args: Args) -> Self {
+        let connection = Connection::open(args.destination).unwrap();
         Self {
             connection,
             mirror: CharGrid::new(TILE_WIDTH, TILE_HEIGHT),
             x: 0,
             y: 0,
+            fast: args.fast > 0,
+            faster: args.fast > 1,
         }
     }
 
     fn run(&mut self) {
+        self.connection.send(Command::Clear).unwrap();
         for byte in std::io::stdin().bytes() {
             let byte = match byte {
                 Err(err) => {
@@ -52,8 +66,9 @@ impl App {
     fn shift_rows(&mut self) {
         let data = self.mirror.data_ref_mut();
         data.rotate_left(TILE_WIDTH);
-        data.last_chunk_mut()
-            .map(move |row: &mut [char; TILE_WIDTH]| row.fill(' '));
+        if let Some(row) = data.last_chunk_mut::<TILE_WIDTH>() {
+            row.fill(' ')
+        }
     }
 
     fn handle_char(&mut self, char: char) {
@@ -67,7 +82,9 @@ impl App {
                     self.connection
                         .send(Command::Cp437Data(Origin::new(self.x, self.y), grid))
                         .unwrap();
-                    sleep(FRAME_PACING);
+                    if !self.fast {
+                        sleep(FRAME_PACING);
+                    }
                 }
 
                 self.x += 1;
@@ -86,19 +103,23 @@ impl App {
     }
 
     fn send_mirror(&self) {
+        if self.fast && !self.faster {
+            sleep(FRAME_PACING);
+        }
+
         self.connection
             .send(Command::Cp437Data(
                 Origin::ZERO,
                 Cp437Grid::from(&self.mirror),
             ))
             .unwrap();
-        sleep(FRAME_PACING);
+
+        if !self.fast {
+            sleep(FRAME_PACING);
+        }
     }
 }
 
 fn main() {
-    let args = Args::parse();
-    let connection = Connection::open(&args.destination).unwrap();
-    connection.send(Command::Clear).unwrap();
-    App::new(connection).run()
+    App::new(Args::parse()).run()
 }
