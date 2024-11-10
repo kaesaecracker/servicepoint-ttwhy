@@ -1,0 +1,91 @@
+{
+  "nodes": {
+    "naersk": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1721727458,
+        "narHash": "sha256-r/xppY958gmZ4oTfLiHN0ZGuQ+RSTijDblVgVLFi1mw=",
+        "owner": "nix-community",
+        "repo": "naersk",
+        "rev": "3fb418eaf352498f6b6c30592e3beb63df42ef11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "naersk",
+        "type": "github"
+      }
+    },
+    "naersk_2": {
+      "inputs": {
+        "nixpkgs": [
+          "servicepoint",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1721727458,
+        "narHash": "sha256-r/xppY958gmZ4oTfLiHN0ZGuQ+RSTijDblVgVLFi1mw=",
+        "owner": "nix-community",
+        "repo": "naersk",
+        "rev": "3fb418eaf352498f6b6c30592e3beb63df42ef11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "naersk",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1730963269,
+        "narHash": "sha256-rz30HrFYCHiWEBCKHMffHbMdWJ35hEkcRVU0h7ms3x0=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "83fb6c028368e465cd19bb127b86f971a5e41ebc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "naersk": "naersk",
+        "nixpkgs": "nixpkgs",
+        "servicepoint": "servicepoint"
+      }
+    },
+    "servicepoint": {
+      "inputs": {
+        "naersk": "naersk_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731233440,
+        "narHash": "sha256-xg6UxGKR+8W0eDctyskbWPO7xZ8rjxWQGso+InllIew=",
+        "owner": "cccb",
+        "repo": "servicepoint",
+        "rev": "c7dc935984b76bff55221f89f8b9b806e9cd2e46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cccb",
+        "repo": "servicepoint",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

@@ -1,0 +1,8 @@
+[package]
+name = "servicepoint-ttwhy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+servicepoint = { version = "0.10.0", features = ["cp437"] }
+clap = { version = "4.5.20", features = ["derive"] }
